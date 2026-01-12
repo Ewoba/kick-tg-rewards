@@ -1,68 +1,12 @@
-# =========================
-# Secrets
-# =========================
+# Python
+.venv/
+__pycache__/
+*.pyc
 .env
-.env.*
-*.pem
-*.key
-*.p12
-*.pfx
 
-# npm config may contain tokens
-.npmrc
+# .NET
+bin/
+obj/
 
-# =========================
-# Logs
-# =========================
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# =========================
-# Node / build artifacts
-# =========================
-node_modules/
-dist/
-coverage/
-build/
-.cache/
-.tmp/
-.tmp*/
-
-# =========================
-# Prisma / local DB artifacts (if any)
-# =========================
-prisma/*.db
-prisma/*.db-journal
-
-# =========================
-# Expo / React Native
-# =========================
-.expo/
-.expo-shared/
-web-build/
-
-# Expo managed workflow:
-# (Оставляйте android/ios в игноре, если вы их НЕ редактируете вручную)
-android/
-ios/
-
-# Native signing keys
-*.keystore
-*.jks
-
-# =========================
-# IDE / OS
-# =========================
+# VS Code / editor
 .vscode/
-.idea/
-.DS_Store
-Thumbs.db
-
-# =========================
-# Misc
-# =========================
-*.swp
-*.swo

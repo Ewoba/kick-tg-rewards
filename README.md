@@ -1,228 +1,83 @@
-# 🎮 Drops Crypto
+# Twitch/Kick Rewards — прототип
 
-**Full-stack platform for crypto drops with Twitch OAuth and wallet integration.**  
-Designed for streamers, viewers, and Web3-native reward mechanics.
+Минимальный стек для авторизации через Kick, Telegram-бота и статичного профиля с привязкой Steam trade link.
 
----
+## Что внутри
+- `backend-python/` — FastAPI: OAuth Kick (PKCE), хранение Steam trade link (in-memory), health и моковые rewards.
+- `backend-csharp/` — ASP.NET Core minimal API: health + rewards (in-memory).
+- `frontend/` — статичная страница профиля с блоками Kick/Twitch/Steam и отображением статуса участия.
+- `bot/` — Telegram-бот (python-telegram-bot) с кнопками открытия фронта и авторизации Kick.
 
-## 🌍 Languages / Языки / Sprachen / Języki
-
-- [🇷🇺 Русский](#-русский)
-- [🇬🇧 English](#-english)
-- [🇩🇪 Deutsch](#-deutsch)
-- [🇵🇱 Polski](#-polski)
-
----
-
-## 🧭 Project Structure
-
-```text
-drops-crypto/
-├── drops-crypto-api/   # Backend (NestJS, Prisma, PostgreSQL)
-├── drops-crypto-app/   # Mobile App (React Native, Expo)
-└── README.md
-```
-
----
-
-## 🔐 Core Features
-
-- Twitch OAuth 2.0 authentication
-- Secure JWT-based authorization
-- Crypto wallet linking (EVM-ready)
-- Stream-based reward logic (Drops)
-- Mobile-first UX (iOS / Android)
-- Scalable backend architecture
-
----
-
-## 🧩 Architecture Overview
-
-**Auth Flow**
-1. User clicks "Connect Twitch"
-2. OAuth redirect to Twitch
-3. Callback handled by Backend
-4. JWT issued and returned to App
-
-**Data Flow**
-- App → API (Authorization: Bearer)
-- API → PostgreSQL via Prisma
-- Wallets linked to user identity
-
----
-
-## 🇷🇺 Русский
-
-### 📌 Описание
-
-**Drops Crypto** — это full-stack приложение для реализации крипто-дропов на базе Twitch.  
-Пользователи авторизуются через Twitch, привязывают криптокошельки и получают награды за активность на стримах.
-
----
-
-### 🧱 Технологический стек
-
-**Backend**
-- NestJS
-- Prisma ORM
-- PostgreSQL
-- Docker / Docker Compose
-- Twitch OAuth 2.0
-- JWT
-
-**Mobile**
-- React Native
-- Expo
-- TypeScript
-
----
-
-### 🚀 Установка и запуск
-
-#### Backend
-
+## Запуск локально
+### Python API
 ```bash
-cd drops-crypto-api
-npm install
-docker compose up -d
-cp .env.example .env
-npx prisma migrate dev --name init
-npm run start:dev
+cd backend-python
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
 ```
+Проверка: `http://localhost:8000/health` → `{ "ok": true, "service": "python-api" }`.
 
-API доступно на: `http://localhost:3000`
-
----
-
-#### ngrok
-
+### C# API (опционально)
 ```bash
-ngrok http 3000
+cd backend-csharp
+dotnet restore
+dotnet run --urls "http://localhost:5000"
 ```
+Проверка: `http://localhost:5000/health`.
 
-Обновите `.env`:
-
-```env
-PUBLIC_BASE_URL=https://xxxx.ngrok.io
-TWITCH_REDIRECT_URI=https://xxxx.ngrok.io/auth/twitch/callback
-```
-
-Добавьте Redirect URL в **Twitch Developer Console**.
-
----
-
-#### Mobile App
-
+### Telegram-бот
 ```bash
-cd drops-crypto-app
-npm install
-npm start
+cd bot
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+set BOT_TOKEN=ваш_токен
+set FRONTEND_URL=http://localhost:8001
+python main.py
 ```
+Команды: `/start`, `/profile`. Есть кнопки «Открыть» (WebApp-ссылка на фронт) и «Авторизоваться в Kick».
 
-- Обновите `API_BASE` в `App.tsx`
-- Используйте **Expo Go** или эмулятор
-
----
-
-### ✅ Проверка
-
-- `/health` отвечает
-- Twitch OAuth успешен
-- JWT возвращается в приложение
-
----
-
-## 🇬🇧 English
-
-### 📌 Overview
-
-**Drops Crypto** is a full-stack application for Twitch-based crypto drops.  
-Users authenticate via Twitch, link wallets, and earn rewards for stream engagement.
-
----
-
-### 🚀 Getting Started
-
+### Фронтенд
 ```bash
-cd drops-crypto-api
-npm install
-docker compose up -d
-npm run start:dev
+python -m http.server 8001 --directory frontend
 ```
+Открыть `http://localhost:8001`. Кнопка «Войти через Kick» ведёт на `/auth/kick/start`. Steam trade link редактируется напрямую в поле и сохраняется в localStorage + через API.
 
-```bash
-cd drops-crypto-app
-npm install
-npm start
+## Основные эндпоинты (Python)
+- `GET /health`
+- `GET /rewards`, `POST /rewards`, `GET /rewards/{id}`, `DELETE /rewards/{id}`
+- `GET /auth/kick/start`, `GET /auth/kick/callback` — PKCE OAuth Kick
+- `GET /steam/link`, `POST /steam/link` — хранение Steam trade link (in-memory)
+- (Twitch эндпоинты есть, но отключены флагом ENABLE_TWITCH)
+
+## Настройка Kick OAuth
+В `backend-python/.env`:
 ```
+KICK_CLIENT_ID=...
+KICK_CLIENT_SECRET=...
+KICK_REDIRECT_URI=http://localhost:8000/auth/kick/callback
+KICK_AUTH_URL=https://id.kick.com/oauth/authorize
+KICK_TOKEN_URL=https://id.kick.com/oauth/token
+KICK_USER_URL=https://api.kick.com/public/v1/users
+KICK_SCOPE=user:read
+```
+В консоли Kick добавьте Redirect URI точь-в-точь как выше. После «Allow» API вернёт JSON и редиректит на FRONTEND_URL с параметрами `kick_user`, `kick_email`, `kick_id`.
 
----
+## Что уже сделано
+- PKCE OAuth для Kick, редирект в фронт и сохранение профиля на клиенте.
+- Плашка «Участие» меняет статус на зелёный, если есть Kick (или Twitch-заглушка) и заполнен Steam trade link.
+- Steam trade link можно ввести/удалить, сохраняется в localStorage и через API.
+- Бот с кнопками открытия фронта и авторизации Kick.
+- Единый стиль блоков Kick/Twitch и кнопок.
 
-## 🇩🇪 Deutsch
+## Что дальше (идея бэклога)
+- Завести реальное хранилище (DB) вместо in-memory.
+- Подключить Twitch OAuth заново и унифицировать статус участия.
+- Поднять фронтенд на HTTPS (Vercel/Netlify) и API на публичный хост для полноценного использования в Telegram Web App.
+- Добавить refresh токенов, защиту state/PKCE в хранилище, авторизацию бота к API.
 
-### 📌 Beschreibung
-
-**Drops Crypto** ist eine Full-Stack-Plattform für Krypto-Drops mit Twitch-Integration.  
-Nutzer authentifizieren sich über Twitch und erhalten Belohnungen für Stream-Aktivität.
-
----
-
-## 🇵🇱 Polski
-
-### 📌 Opis
-
-**Drops Crypto** to aplikacja full-stack do crypto dropsów oparta o Twitch OAuth.  
-Użytkownicy zdobywają nagrody za aktywność na streamach.
-
----
-
-## 🛣 Roadmap
-
-- User profiles
-- Wallet verification
-- Streamer dashboards
-- Smart contract integration
-- Production deployment
-
----
-
-## 🤝 Contributing
-
-Pull requests are welcome.  
-For major changes, please open an issue first to discuss what you would like to change.
-
----
-
-## 🔒 Security
-
-- Secrets stored in `.env`
-- OAuth tokens never exposed to client
-- JWT expiration enforced
-
----
-## 🔐 Security
-Please see [SECURITY.md](./SECURITY.md) for vulnerability reporting.
-
-## 📄 License
-
-MIT License
-
-Copyright (c) 2026 Drops Crypto
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## Безопасность
+- Не коммить `.env` и токены (используйте `.env.example`).
+- В проде требуется HTTPS и точное совпадение Redirect URI в консоли Kick/Twitch.
