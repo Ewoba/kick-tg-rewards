@@ -119,6 +119,7 @@ Redirect URI в консоли Twitch — точное совпадение.
 ## Roadmap и ветки
 - Roadmap: см. `ROADMAP.md`.
 - Ветки и роли: см. `TEAM_BRANCHES.md`.
+- История версий: см. `CHANGELOG.md`.
 
 ---
 
